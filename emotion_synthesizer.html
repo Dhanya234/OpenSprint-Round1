@@ -8,37 +8,29 @@
 <body>
     <div class="container">
         <h1>Mood Visualizer</h1>
-        <input type="text" id="userInput" placeholder="type something...">
+        <input type="text" id="userInput" placeholder="type something">
         <div id="moodText"></div>
         <div id="canvas"></div>
     </div>
-
     <script>
         let canvas = document.getElementById('canvas');
         let moodText = document.getElementById('moodText');
         let input = document.getElementById('userInput');
-        
         let count = 0;
         let playing = false;
         let mood = 'calm';
-        
-        // different moods
         let moods = {
             happy: { symbols: ['😊', '😄', '🙂', '😃'], speed: 0.2, color: '#ffd700' },
             sad: { symbols: ['😢', '😔', '😞', '☹️'], speed: 0.05, color: '#888' },
             angry: { symbols: ['😠', '😡', '💢', '😤'], speed: 0.3, color: '#ff4444' },
             calm: { symbols: ['😌', '😇', '🙏', '✨'], speed: 0.1, color: '#4299e1' }
         };
-        
-        // words that match moods
         let words = {
             happy: ['happy', 'joy', 'love', 'great', 'good', 'nice'],
             sad: ['sad', 'hurt', 'pain', 'cry', 'bad'],
             angry: ['angry', 'mad', 'hate', 'annoyed'],
             calm: ['calm', 'peace', 'quiet', 'chill']
         };
-        
-        // find mood from text
         function findMood(text) {
             text = text.toLowerCase();
             
@@ -51,12 +43,9 @@
             }
             return 'calm';
         }
-        
-        // draw pattern
         function draw() {
             let currentMood = moods[mood];
             let output = '';
-            
             for (let y = 0; y < 10; y++) {
                 for (let x = 0; x < 30; x++) {
                     let wave = Math.sin(x * 0.3 + count * currentMood.speed);
@@ -64,8 +53,7 @@
                     output += currentMood.symbols[pos] + ' ';
                 }
                 output += '\n';
-            }
-            
+            }  
             canvas.textContent = output;
             canvas.style.color = currentMood.color;
             count++;
@@ -74,11 +62,8 @@
                 requestAnimationFrame(draw);
             }
         }
-        
-        // when user types
         input.addEventListener('input', function() {
             let text = input.value.trim();
-            
             if (text) {
                 mood = findMood(text);
                 moodText.textContent = 'Mood: ' + mood;
@@ -94,8 +79,6 @@
                 moodText.textContent = '';
             }
         });
-        
-        // start
         playing = true;
         draw();
     </script>
