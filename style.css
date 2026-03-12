@@ -1,0 +1,51 @@
+body {
+    font-family: monospace;
+    background: linear-gradient(#667eea, #764ba2);
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    background: white;
+    border-radius: 10px;
+    padding: 30px;
+    max-width: 700px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
+
+h1 {
+    text-align: center;
+    color: #667eea;
+    margin-bottom: 20px;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid #667eea;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+#moodText {
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+#canvas {
+    background: black;
+    border-radius: 5px;
+    padding: 15px;
+    min-height: 200px;
+    color: white;
+    white-space: pre;
+    font-size: 18px;
+    line-height: 1.5;
+    overflow: hidden;
+}
