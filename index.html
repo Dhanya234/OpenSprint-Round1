@@ -1,86 +1,110 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Mood Visualizer</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mood Visualizer</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Mood Visualizer</h1>
-        <input type="text" id="userInput" placeholder="type something">
-        <div id="moodText"></div>
-        <div id="canvas"></div>
-    </div>
-    <script>
-        let canvas = document.getElementById('canvas');
-        let moodText = document.getElementById('moodText');
-        let input = document.getElementById('userInput');
-        let count = 0;
-        let playing = false;
-        let mood = 'calm';
-        let moods = {
-            happy: { symbols: ['😊', '😄', '🙂', '😃'], speed: 0.2, color: '#ffd700' },
-            sad: { symbols: ['😢', '😔', '😞', '☹️'], speed: 0.05, color: '#888' },
-            angry: { symbols: ['😠', '😡', '💢', '😤'], speed: 0.3, color: '#ff4444' },
-            calm: { symbols: ['😌', '😇', '🙏', '✨'], speed: 0.1, color: '#4299e1' }
-        };
-        let words = {
-            happy: ['happy', 'joy', 'love', 'great', 'good', 'nice'],
-            sad: ['sad', 'hurt', 'pain', 'cry', 'bad'],
-            angry: ['angry', 'mad', 'hate', 'annoyed'],
-            calm: ['calm', 'peace', 'quiet', 'chill']
-        };
-        function findMood(text) {
-            text = text.toLowerCase();
-            
-            for (let m in words) {
-                for (let i = 0; i < words[m].length; i++) {
-                    if (text.includes(words[m][i])) {
-                        return m;
-                    }
-                }
-            }
-            return 'calm';
+  <div class="container">
+    <button class="toggle-btn" id="themeToggle">🌙 Dark</button>
+    <h1>Mood Visualizer 🎨</h1>
+    <p class="subtitle">Type something and watch your mood come alive!</p>
+    <input type="text" id="userInput" placeholder="e.g. I'm feeling happy today...">
+    <div id="loading"></div>
+    <div id="moodText"></div>
+    <div id="canvas"></div>
+  </div>
+
+  <script>
+    // ── Core data (unchanged) ──
+    const moods = {
+      happy: { symbols: ['😊','😄','🙂','😃'], speed: 0.2, color: '#ffd700' },
+      sad:   { symbols: ['😢','😔','😞','☹️'], speed: 0.05, color: '#888' },
+      angry: { symbols: ['😠','😡','💢','😤'], speed: 0.3,  color: '#ff4444' },
+      calm:  { symbols: ['😌','😇','🙏','✨'], speed: 0.1,  color: '#4299e1' }
+    };
+    const words = {
+      happy: ['happy','joy','love','great','good','nice'],
+      sad:   ['sad','hurt','pain','cry','bad'],
+      angry: ['angry','mad','hate','annoyed'],
+      calm:  ['calm','peace','quiet','chill']
+    };
+
+    // ── Mood emoji badge icons ──
+    const moodIcons = { happy: '😄', sad: '😢', angry: '😠', calm: '😌' };
+
+    // ── State ──
+    let count = 0, playing = false, mood = 'calm';
+    const canvas   = document.getElementById('canvas');
+    const moodText = document.getElementById('moodText');
+    const input    = document.getElementById('userInput');
+    const loading  = document.getElementById('loading');
+    let analyzeTimer = null;
+
+    // ── Core logic (unchanged) ──
+    function findMood(text) {
+      text = text.toLowerCase();
+      for (let m in words)
+        for (let w of words[m])
+          if (text.includes(w)) return m;
+      return 'calm';
+    }
+
+    function draw() {
+      const m = moods[mood];
+      let out = '';
+      for (let y = 0; y < 10; y++) {
+        for (let x = 0; x < 30; x++) {
+          const wave = Math.sin(x * 0.3 + count * m.speed);
+          const pos  = Math.floor((wave + 1) * 2) % m.symbols.length;
+          out += m.symbols[pos] + ' ';
         }
-        function draw() {
-            let currentMood = moods[mood];
-            let output = '';
-            for (let y = 0; y < 10; y++) {
-                for (let x = 0; x < 30; x++) {
-                    let wave = Math.sin(x * 0.3 + count * currentMood.speed);
-                    let pos = Math.floor((wave + 1) * 2) % currentMood.symbols.length;
-                    output += currentMood.symbols[pos] + ' ';
-                }
-                output += '\n';
-            }  
-            canvas.textContent = output;
-            canvas.style.color = currentMood.color;
-            count++;
-            
-            if (playing) {
-                requestAnimationFrame(draw);
-            }
-        }
-        input.addEventListener('input', function() {
-            let text = input.value.trim();
-            if (text) {
-                mood = findMood(text);
-                moodText.textContent = 'Mood: ' + mood;
-                
-                if (!playing) {
-                    playing = true;
-                    count = 0;
-                    draw();
-                }
-            } else {
-                playing = false;
-                canvas.textContent = '';
-                moodText.textContent = '';
-            }
-        });
-        playing = true;
-        draw();
-    </script>
+        out += '\n';
+      }
+      canvas.textContent = out;
+      canvas.style.color = m.color;
+      count++;
+      if (playing) requestAnimationFrame(draw);
+    }
+
+    // ── Input handler with loading delay ──
+    input.addEventListener('input', function () {
+      const text = input.value.trim();
+      if (!text) {
+        playing = false;
+        canvas.textContent = '';
+        moodText.textContent = '';
+        loading.textContent = '';
+        clearTimeout(analyzeTimer);
+        return;
+      }
+
+      // Show loading message
+      loading.textContent = '✨ Analyzing your mood...';
+      moodText.textContent = '';
+      clearTimeout(analyzeTimer);
+
+      analyzeTimer = setTimeout(() => {
+        mood = findMood(text);
+        loading.textContent = '';
+        moodText.innerHTML = moodIcons[mood] + ' Mood: <span style="text-transform:capitalize">' + mood + '</span>';
+        if (!playing) { playing = true; count = 0; draw(); }
+      }, 600);
+    });
+
+    // ── Dark mode toggle ──
+    const toggleBtn = document.getElementById('themeToggle');
+    toggleBtn.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      const isDark = document.body.classList.contains('dark');
+      toggleBtn.textContent = isDark ? '☀️ Light' : '🌙 Dark';
+    });
+
+    // ── Start idle animation ──
+    playing = true;
+    draw();
+  </script>
 </body>
 </html>

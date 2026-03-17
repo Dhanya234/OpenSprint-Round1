@@ -1,51 +1,163 @@
+/* ── Google Font ── */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+/* ── CSS Variables (Light Theme) ── */
+:root {
+  --bg-grad-start: #667eea;
+  --bg-grad-end:   #764ba2;
+  --card-bg:       #ffffff;
+  --card-shadow:   0 8px 32px rgba(102,126,234,0.25);
+  --text-primary:  #2d2d2d;
+  --text-secondary:#555;
+  --accent:        #667eea;
+  --input-border:  #c5cff7;
+  --canvas-bg:     #0f0f1a;
+  --toggle-bg:     #667eea;
+  --loading-color: #888;
+  --mood-badge-bg: #f0f2ff;
+}
+
+/* ── Dark Theme ── */
+body.dark {
+  --bg-grad-start: #1a1a2e;
+  --bg-grad-end:   #16213e;
+  --card-bg:       #1e1e2e;
+  --card-shadow:   0 8px 32px rgba(0,0,0,0.5);
+  --text-primary:  #e0e0f0;
+  --text-secondary:#aaa;
+  --accent:        #a78bfa;
+  --input-border:  #3a3a5c;
+  --canvas-bg:     #050510;
+  --toggle-bg:     #a78bfa;
+  --loading-color: #aaa;
+  --mood-badge-bg: #2a2a3e;
+}
+
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
 body {
-    font-family: monospace;
-    background: linear-gradient(#667eea, #764ba2);
-    height: 100vh;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, var(--bg-grad-start), var(--bg-grad-end));
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  transition: background 0.4s;
 }
 
+/* ── Card ── */
 .container {
-    background: white;
-    border-radius: 10px;
-    padding: 30px;
-    max-width: 700px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+  background: var(--card-bg);
+  border-radius: 20px;
+  padding: 36px 32px;
+  width: 100%;
+  max-width: 680px;
+  box-shadow: var(--card-shadow);
+  transition: background 0.4s, box-shadow 0.4s;
+  position: relative;
 }
 
+/* ── Dark Mode Toggle ── */
+.toggle-btn {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  background: var(--toggle-bg);
+  border: none;
+  border-radius: 50px;
+  padding: 6px 14px;
+  color: #fff;
+  font-size: 13px;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+.toggle-btn:hover { transform: scale(1.07); }
+
+/* ── Heading ── */
 h1 {
-    text-align: center;
-    color: #667eea;
-    margin-bottom: 20px;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 6px;
+  letter-spacing: -0.5px;
 }
 
-input {
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    border: 2px solid #667eea;
-    border-radius: 5px;
-    margin-bottom: 15px;
+.subtitle {
+  text-align: center;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  margin-bottom: 28px;
 }
 
+/* ── Input ── */
+#userInput {
+  width: 100%;
+  padding: 13px 16px;
+  font-size: 15px;
+  font-family: 'Poppins', sans-serif;
+  border: 2px solid var(--input-border);
+  border-radius: 12px;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.25s, box-shadow 0.25s;
+  margin-bottom: 18px;
+}
+#userInput:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(102,126,234,0.15);
+}
+#userInput::placeholder { color: var(--text-secondary); opacity: 0.7; }
+
+/* ── Mood Badge ── */
 #moodText {
-    text-align: center;
-    font-size: 18px;
-    margin-bottom: 15px;
-    color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: var(--mood-badge-bg);
+  border-radius: 50px;
+  padding: 8px 20px;
+  margin-bottom: 18px;
+  min-height: 42px;
+  transition: background 0.3s, color 0.3s;
+}
+#moodText:empty { display: none; }
+
+/* ── Loading ── */
+#loading {
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--loading-color);
+  margin-bottom: 12px;
+  min-height: 22px;
+  font-style: italic;
+  transition: opacity 0.3s;
 }
 
+/* ── Canvas ── */
 #canvas {
-    background: black;
-    border-radius: 5px;
-    padding: 15px;
-    min-height: 200px;
-    color: white;
-    white-space: pre;
-    font-size: 18px;
-    line-height: 1.5;
-    overflow: hidden;
+  background: var(--canvas-bg);
+  border-radius: 14px;
+  padding: 18px 14px;
+  min-height: 210px;
+  white-space: pre;
+  font-size: 17px;
+  line-height: 1.6;
+  overflow: hidden;
+  transition: background 0.4s;
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .container { padding: 28px 18px; }
+  h1 { font-size: 1.5rem; }
+  #canvas { font-size: 13px; padding: 12px 8px; }
 }
